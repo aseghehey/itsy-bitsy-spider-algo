@@ -1,4 +1,6 @@
 from collections import defaultdict
+import readFromGraph
+
 class Node:
     def __init__(self, n=None, s=None, w=None, e=None, u=None, d=None) -> None:
         self.north = n
