@@ -45,7 +45,7 @@ def bfs(graph, vertex):
                 queue.append(edges)
 '''
 
-def helper(v, prev, vSet, p, dir, q):
+def helper(v, vSet, p, dir, q):
     if v not in vSet:
         vSet.add(v)
         p.append(dir)
@@ -65,53 +65,54 @@ def bfs(start, end):
         if node.north:
             # print('north')
             visit = node.north
-            helper(visit, node, visited, path.copy(), 'N', queue)
+            helper(visit, visited, path.copy(), 'N', queue)
         if node.south:
             # print('south')
             visit = node.south
-            helper(visit, node, visited, path.copy(), 'S', queue)
+            helper(visit, visited, path.copy(), 'S', queue)
         if node.west:
             # print('west')
             visit = node.west
-            helper(visit, node, visited, path.copy(), 'W', queue)
+            helper(visit, visited, path.copy(), 'W', queue)
         if node.east:
             # print('east')
             visit = node.east
-            helper(visit, node, visited, path.copy(), 'E', queue)
+            helper(visit, visited, path.copy(), 'E', queue)
         if node.up:
             # print('up')
             visit = node.up
-            helper(visit, node, visited, path.copy(), 'U', queue)
+            helper(visit, visited, path.copy(), 'U', queue)
         if node.down:
             # print('down')
             visit = node.down
-            helper(visit, node, visited, path.copy(), 'D', queue)
+            helper(visit, visited, path.copy(), 'D', queue)
 
 
 if __name__ == "__main__":
-    binaryGraph, levels = readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/tiny-maze.txt')
+    binaryGraph, levels = readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/itsybitsy-maze.txt')
     # print(binaryGraph)
-    graph = {i + 1: [] for i in range(levels)}
+    graph = {i: [] for i in range(levels)}
     lvl = 0
 
     for k, v in binaryGraph.items():
-        lvl += 1
         for i in range(len(v)):
             temp = []
             for j in range(len(v[i])):
                 temp.append(Node())
             graph[lvl].append(temp)
+        lvl += 1
 
     # print(direction(4, binaryGraph[1][0][0]))
-    dir = {i + 1: [] for i in range(levels)}
+    dir = {i: [] for i in range(levels)}
     lvl = 0
     for k, v in binaryGraph.items():
-        lvl += 1
         for i in range(len(v)):
             temp = []
             for j in range(len(v[i])):
                 temp.append(direction(v[i][j]))
             dir[lvl].append(temp)
+        lvl += 1
+
     # print(dir)
     # print(binaryGraph)
     for lvl, vals in dir.items():
@@ -130,7 +131,18 @@ if __name__ == "__main__":
                         graph[lvl][i][j].up = graph[lvl + 1][i][j]
                     else:
                         graph[lvl][i][j].down = graph[lvl - 1][i][j]
+
+
+    f_analysis = open('analysis', 'w')
+    for k, v in dir.items():
+        for vals in v:
+            f_analysis.write('    '.join(vals) + '\n')
+        f_analysis.write('\n')
+    f_analysis.close()
     # print(dir[3][2][2])
-    print(bfs(graph[1][0][0], graph[3][2][2]))
+    # print(graph.keys())
+    f_out = open('output.txt', 'w')
+    f_out.write(' '.join(bfs(graph[0][3][3], graph[4][0][0])))
+    f_out.close()
     # print(bfs(graph[1][0][0], graph[1][1][0]))
 

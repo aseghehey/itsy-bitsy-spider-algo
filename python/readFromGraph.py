@@ -1,7 +1,7 @@
 def readGraph(path):
     fin = open(path,'r')
     content = fin.readlines()
-
+    fin.close()
     nrc = (content[0].replace('\n','')).split()
     n, r, c = int(nrc[0]), int(nrc[1]), int(nrc[-1])
 
@@ -33,5 +33,10 @@ def getDirections(lvl, graph):
             g.append(t)
     return g
 
-# print(readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/itsybitsy-maze.txt')[2])
+# testing_logic, n = readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/itsybitsy-maze.txt')
+
+
+# for k, v in testing_logic.items():
+#     print(f'{k}\n{v}')
+
 # print(getDirections(2, readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/tiny-maze.txt')))

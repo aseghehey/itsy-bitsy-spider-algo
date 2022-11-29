@@ -1,0 +1,25 @@
+EU    EW    EW    SW
+SU    SU    SU    NU
+NSU    NS    NE    WU
+N    NU    EU    W
+
+ED    EW    ESW    WU
+UD    UD    NSUD    UD
+ED    WU    NS    SD
+EU    WD    ND    NU
+
+SU    ES    WU    SD
+NSD    ND    SD    NUD
+NU    SD    NE    WU
+UD    NE    EWU    WUD
+
+D    SU    ED    WU
+EU    NWU    SU    UD
+ED    WU    NU    UD
+UD    EU    WD    UD
+
+ES    EWD    EW    WD
+NSD    ED    WD    SD
+NS    ED    WD    ND
+ND    ED    EW    WD
+
