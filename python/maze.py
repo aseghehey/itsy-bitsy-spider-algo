@@ -45,48 +45,48 @@ def bfs(graph, vertex):
                 queue.append(edges)
 '''
 
-
 def helper(v, prev, vSet, p, dir, q):
     if v not in vSet:
         vSet.add(v)
         p.append(dir)
-        q.append([v, p])
+        q.append((v, p))
 
 def bfs(start, end):
     visited = set()
-    queue = [[start, []]]
+    queue = [(start, [])]
     visited.add(start)
-    
+
     while queue:
         node, path = queue.pop(0)
+        # print(path)
         if node == end:
             return path
-
         visit = None
         if node.north:
             # print('north')
             visit = node.north
-            helper(visit, node, visited, path, 'N', queue)
+            helper(visit, node, visited, path.copy(), 'N', queue)
         if node.south:
             # print('south')
             visit = node.south
-            helper(visit, node, visited, path, 'S', queue)
+            helper(visit, node, visited, path.copy(), 'S', queue)
         if node.west:
             # print('west')
             visit = node.west
-            helper(visit, node, visited, path, 'W', queue)
+            helper(visit, node, visited, path.copy(), 'W', queue)
         if node.east:
             # print('east')
             visit = node.east
-            helper(visit, node, visited, path, 'E', queue)
+            helper(visit, node, visited, path.copy(), 'E', queue)
         if node.up:
             # print('up')
             visit = node.up
-            helper(visit, node, visited, path, 'U', queue)
+            helper(visit, node, visited, path.copy(), 'U', queue)
         if node.down:
             # print('down')
             visit = node.down
-            helper(visit, node, visited, path, 'D', queue)
+            helper(visit, node, visited, path.copy(), 'D', queue)
+
 
 if __name__ == "__main__":
     binaryGraph, levels = readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/tiny-maze.txt')
@@ -130,5 +130,7 @@ if __name__ == "__main__":
                         graph[lvl][i][j].up = graph[lvl + 1][i][j]
                     else:
                         graph[lvl][i][j].down = graph[lvl - 1][i][j]
-
+    # print(dir[3][2][2])
     print(bfs(graph[1][0][0], graph[3][2][2]))
+    # print(bfs(graph[1][0][0], graph[1][1][0]))
+
