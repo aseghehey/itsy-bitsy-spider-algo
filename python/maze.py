@@ -10,10 +10,6 @@ class Node:
         self.up = u
         self.down = d
 
-    def NodeDirections(self, pointer):
-        direction = {self.north: 'N', self.south: 'S', self.west: 'W', self.east: 'E', self.up: 'U', self.down: 'D'}
-        return direction[pointer] if pointer else None
-
 '''
 class Graph:
     def __init__(self, n) -> None:
@@ -34,6 +30,63 @@ def direction(bits):
         if int(b):
             res += directions[num]
     return res
+
+'''
+def bfs(graph, vertex):
+    visited = set()
+    queue = [vertex]
+    visited.add(vertex)
+    while queue:
+        v = queue.pop(0)
+        print(v)
+        for edges in graph[v]:
+            if edges not in visited:
+                visited.add(edges)
+                queue.append(edges)
+'''
+
+
+def helper(v, prev, vSet, p, dir, q):
+    if v not in vSet:
+        vSet.add(v)
+        p.append(dir)
+        q.append([v, p])
+
+def bfs(start, end):
+    visited = set()
+    queue = [[start, []]]
+    visited.add(start)
+    
+    while queue:
+        node, path = queue.pop(0)
+        if node == end:
+            return path
+
+        visit = None
+        if node.north:
+            # print('north')
+            visit = node.north
+            helper(visit, node, visited, path, 'N', queue)
+        if node.south:
+            # print('south')
+            visit = node.south
+            helper(visit, node, visited, path, 'S', queue)
+        if node.west:
+            # print('west')
+            visit = node.west
+            helper(visit, node, visited, path, 'W', queue)
+        if node.east:
+            # print('east')
+            visit = node.east
+            helper(visit, node, visited, path, 'E', queue)
+        if node.up:
+            # print('up')
+            visit = node.up
+            helper(visit, node, visited, path, 'U', queue)
+        if node.down:
+            # print('down')
+            visit = node.down
+            helper(visit, node, visited, path, 'D', queue)
 
 if __name__ == "__main__":
     binaryGraph, levels = readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/tiny-maze.txt')
@@ -60,7 +113,7 @@ if __name__ == "__main__":
                 temp.append(direction(v[i][j]))
             dir[lvl].append(temp)
     # print(dir)
-
+    # print(binaryGraph)
     for lvl, vals in dir.items():
         for i in range(len(vals)):
             for j in range(len(vals[i])):
@@ -78,9 +131,4 @@ if __name__ == "__main__":
                     else:
                         graph[lvl][i][j].down = graph[lvl - 1][i][j]
 
-    print(graph, '\n')
-    print(dir, '\n')
-    print(graph[1][0][0].up == graph[2][0][0])
-    print(graph[1][0][1].east == graph[1][0][2])
-
-
+    print(bfs(graph[1][0][0], graph[3][2][2]))
