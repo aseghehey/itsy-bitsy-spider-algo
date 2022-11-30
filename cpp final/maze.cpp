@@ -108,26 +108,39 @@ int main(){
         graph.push_back(buildNodeGraph);
         binaryGraph.push_back(current_level);
     }
-
+    
     for (int i = 0; i < binaryGraph.size(); i++){
-        for (int j = 0; j < binaryGraph.at(i).size(); j++){
-            for (int k = 0; k < binaryGraph.at(i).at(j).size(); k++){
-                // std::cout << binaryGraph.at(i).at(j).at(k) << std::endl; 
-                // std::cout << graph.at(i).at(j).at(k).val << std::endl;
+        for (int j = 0; j < binaryGraph[i].size(); j++){
+            for (int k = 0; k < binaryGraph[i][j].size(); k++){
+                std::string current_string = binaryGraph[i][j][k];
+                for (int w = 0; w < current_string.length(); w++){
+                    switch(current_string[w]){
+                        case 'N':
+                            graph[i][j][k].North = &graph[i][j-1][k];
+                            break;
+                        case 'S':
+                            graph[i][j][k].South = &graph[i][j+1][k];
+                            break;
+                        case 'W':
+                            graph[i][j][k].West = &graph[i][j][k-1];
+                            break;
+                        case 'E':
+                            graph[i][j][k].East = &graph[i][j][k+1];
+                            break;
+                        case 'U':
+                            graph[i][j][k].Up = &graph[i+1][j][k];
+                            break;
+                        case 'D':
+                            graph[i][j][k].Down = &graph[i-1][j][k];
+                            break;
+                    }
+                }
             }
         }
     }
 
-
-    //level = 0
-    // loop from third line to final, in increments of r
-        // loop from i to i + c
-        //add to cur level(index)
-        // increment level
-
-
-
-
+    // std::cout << graph[0][0][0].Up << std::endl;
+    // std::cout << &graph[1][0][0] << std::endl;
 
     return 0;
 }
