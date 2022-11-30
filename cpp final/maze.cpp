@@ -5,7 +5,6 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
-#include <map>
 #include <tuple>
 #include <queue>
 
@@ -15,6 +14,7 @@ struct Vertex {
 
     /*
         Each vertex will have 6 pointers which will be initialized to null.
+        The graph will use this struct as vertices and the pointers are used to represent the edges.
     */
 
     Vertex* North;
@@ -26,6 +26,7 @@ struct Vertex {
     int id; // to identify and to use on the visited set later
 
     Vertex() {
+        // the default value for each pointer is null and they will be changed later as we build the edges
         North = nullptr;
         South = nullptr;
         East = nullptr;
@@ -118,6 +119,11 @@ void helper(Vertex v, std::vector<bool>& visited, std::vector<std::string> path,
 }
 
 void writeToFile(std::vector<std::string> data){
+    
+    /*
+        Given data, this function will write the contents of data to the output file
+    */
+
     std::ofstream output("output.txt"); 
     for (int i = 0; i < data.size(); i++){
         output << data[i] << ' ';
@@ -149,10 +155,13 @@ void bfs(Vertex start, Vertex end){
         std::vector<std::string> cur_path = current_pair.second;
 
         if (vertex.id == end.id) { // way to identify that we have reached the end
+            // std::cout << &vertex << ' ' << &end << std::endl;
+            // std::cout << vertex.id << ' ' << end.id << std::endl;
             writeToFile(cur_path);
-            break;
+            return; // end function
         }
 
+        // adding the edges to the queue
         if (vertex.North != nullptr){
             helper(*vertex.North, visited, cur_path, "N", queue);
         }
@@ -180,55 +189,67 @@ void bfs(Vertex start, Vertex end){
 
 }
 
-std::vector<std::vector<std::vector<Vertex>>> Graph(std::tuple <int, int, int> size, std::tuple <int, int, int> start, std::tuple <int, int, int> end, std::ifstream& file){
-    std::vector<std::vector<std::vector<Vertex>>> graph;    
-    std::vector<std::vector<std::vector<std::string>>> binaryGraph;
+std::vector<std::vector<std::vector<Vertex>>> Graph(std::tuple <int, int, int> size, std::ifstream& file){
+    /*
+        Given the size and file to be read from, this function will create and return a graph with vertices and pointers
+        to other vertices, which corresponds to the binary string input from the file
+    */
+    std::vector<std::vector<std::vector<Vertex>>> graph;    // graph that will be returned
+    std::vector<std::vector<std::vector<std::string>>> binaryGraph; // graph that will store the read bits from the textfile
 
-    for (int i = 0; i < (std::get<0>(size)*std::get<1>(size)); i = i + std::get<1>(size)){
-        std::vector<std::vector<Vertex>> buildNodeGraph;
-        std::vector<std::vector<std::string>> current_level;
-        for (int j = 0; j < std::get<1>(size); j++){
-            std::vector<Vertex> buildNodes;
-            std::vector<std::string> current_row;
-            for (int k = 0; k < std::get<2>(size); k++){
-                std::string temp;
-                file >> temp;
+    for (int z = 0; z < (std::get<0>(size)*std::get<1>(size)); z = z + std::get<1>(size)){ // traverses until the number of (rows * levels) is reached
+        // helper vectors which are used later to build upper layers of graph
+        std::vector<std::vector<Vertex>> buildNodeGraph; 
+        std::vector<std::vector<std::string>> current_level; 
+
+        for (int y = 0; y < std::get<1>(size); y++){ // loops until number of rows
+            // helper vectors which are used later to build the layers of the graph
+            std::vector<Vertex> buildNodes; 
+            std::vector<std::string> current_row; 
+
+            for (int x = 0; x < std::get<2>(size); x++){ // loops until number of columns
+                std::string temp; // temporary to hold current string read from file
+                file >> temp; 
                 current_row.push_back(getDirections(temp));
-                Vertex cur;
-                cur.id = totalsize;
+                Vertex cur; // Vertex to be added
+                cur.id = totalsize; // for identification used later
                 totalsize += 1;
-                buildNodes.push_back(cur);
+                buildNodes.push_back(cur); // start of building graph
             }
+            // build levels
             buildNodeGraph.push_back(buildNodes);
             current_level.push_back(current_row);
         }
+        // build upper layer
         graph.push_back(buildNodeGraph);
         binaryGraph.push_back(current_level);
     }
 
-    for (int i = 0; i < binaryGraph.size(); i++){
-        for (int j = 0; j < binaryGraph[i].size(); j++){
-            for (int k = 0; k < binaryGraph[i][j].size(); k++){
-                std::string current_string = binaryGraph[i][j][k];
+    // creating the edges for the graph
+    for (int z = 0; z < binaryGraph.size(); z++){
+        for (int y = 0; y < binaryGraph[z].size(); y++){
+            for (int x = 0; x < binaryGraph[z][y].size(); x++){
+                std::string current_string = binaryGraph[z][y][x]; // will go through each letter in the string and determine the dependencies (where to direct pointers)
+            
                 for (int w = 0; w < current_string.length(); w++){
                     switch(current_string[w]){
                         case 'N':
-                            graph[i][j][k].North = &graph[i][j-1][k];
+                            graph[z][y][x].North = &graph[z][y-1][x]; // north is above current row
                             break;
                         case 'S':
-                            graph[i][j][k].South = &graph[i][j+1][k];
+                            graph[z][y][x].South = &graph[z][y+1][x]; // south is below current row
                             break;
                         case 'W':
-                            graph[i][j][k].West = &graph[i][j][k-1];
+                            graph[z][y][x].West = &graph[z][y][x-1]; // west is in the previous column
                             break;
                         case 'E':
-                            graph[i][j][k].East = &graph[i][j][k+1];
+                            graph[z][y][x].East = &graph[z][y][x+1]; // east is in the next column
                             break;
                         case 'U':
-                            graph[i][j][k].Up = &graph[i+1][j][k];
+                            graph[z][y][x].Up = &graph[z+1][y][x]; // up is in above level
                             break;
                         case 'D':
-                            graph[i][j][k].Down = &graph[i-1][j][k];
+                            graph[z][y][x].Down = &graph[z-1][y][x]; // down is a level below
                             break;
                     }
                 }
@@ -241,99 +262,24 @@ std::vector<std::vector<std::vector<Vertex>>> Graph(std::tuple <int, int, int> s
 
 int main(){
     
-    // std::ifstream file("/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/tiny-maze.txt");
-    //itsybitsy-maze.txt
     std::ifstream file("/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/tiny-maze.txt");
-    std::string results;
 
     if (!file.is_open()){
         std::cout << "cannot";
         throw std::runtime_error("cannot read file");
     }
 
-    std::tuple <int, int, int> size; // l, r, c
+    std::tuple <int, int, int> size; // levels, rows, columns
     std::tuple <int, int, int> start; // coordinates for the starting vertex
     std::tuple <int, int, int> end; // coordinates for the destination vertex
 
+    // reading and storing first three lines to their respective tuples
     addToTuple(file, size);
     addToTuple(file, start);
     addToTuple(file, end);
 
-
-    std::vector<std::vector<std::vector<Vertex>>> graph = Graph(size, start, end, file);
+    std::vector<std::vector<std::vector<Vertex>>> graph = Graph(size, file);
     bfs(graph[std::get<0>(start)][std::get<1>(start)][std::get<2>(start)], graph[std::get<0>(end)][std::get<1>(end)][std::get<2>(end)]);
-
-    /*
-    //test
-
-    for (int i = 0; i < binaryGraph.size(); i++){
-        for (int j = 0; j < binaryGraph[i].size(); j++){
-            for (int k = 0; k < binaryGraph[i][j].size(); k++){
-                std::cout << graph[i][j][k].id << ' ';
-            }
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-    }
-    */
-
-    /*
-    std::vector<bool> visited;
-    visited.resize(totalsize, false);
-    std::queue<std::pair<Vertex, std::vector<std::string>>> queue;
-    std::vector<std::string> start_path;
-
-    std::pair<Vertex, std::vector<std::string>> p(graph[0][3][3], start_path);
-    queue.push(p);
-    visited[graph[0][3][3].id] = true;
-
-    while(!queue.empty()){
-
-        std::pair<Vertex, std::vector<std::string>> current = queue.front();
-        queue.pop();
-
-        Vertex cur = current.first;
-        std::vector<std::string> path = current.second;
-
-        // test
-        // for (int i = 0; i < path.size(); i ++){
-        //         std::cout << path[i] << ' ';
-        // }
-        // std::cout << std::endl;
-
-        if (cur.id == graph[4][0][0].id){
-            for (int i = 0; i < path.size(); i ++){
-                std::cout << path[i] << ' ';
-            }
-            // break;
-        }
-
-        if (cur.North != nullptr){
-            helper(*cur.North, visited, path, "N", queue);
-        }
-
-        if (cur.South != nullptr){
-            // come back
-            helper(*cur.South, visited, path, "S", queue);
-        }
-
-        if (cur.East != nullptr){
-            helper(*cur.East, visited, path, "E", queue);
-        }
-
-        if (cur.West != nullptr){
-            helper(*cur.West, visited, path, "W", queue);
-        }
-
-        if (cur.Up != nullptr){
-            helper(*cur.Up, visited, path, "U", queue);
-        }
-
-        if (cur.Down != nullptr){
-            helper(*cur.Down, visited, path, "D", queue);
-        }
-    }
-    */
     
     return 0;
 }
