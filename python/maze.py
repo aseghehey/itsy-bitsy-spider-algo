@@ -87,7 +87,6 @@ def bfs(start, end):
             visit = node.down
             helper(visit, visited, path.copy(), 'D', queue)
 
-
 if __name__ == "__main__":
     binaryGraph, levels = readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/itsybitsy-maze.txt')
     # print(binaryGraph)
@@ -132,7 +131,6 @@ if __name__ == "__main__":
                     else:
                         graph[lvl][i][j].down = graph[lvl - 1][i][j]
 
-
     f_analysis = open('analysis', 'w')
     for k, v in dir.items():
         for vals in v:
@@ -145,4 +143,3 @@ if __name__ == "__main__":
     f_out.write(' '.join(bfs(graph[0][3][3], graph[4][0][0])))
     f_out.close()
     # print(bfs(graph[1][0][0], graph[1][1][0]))
-
