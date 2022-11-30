@@ -8,16 +8,15 @@ def readGraph(path):
     start = content[1].replace('\n','').split()
     end = content[2].replace('\n','').split()
 
-    graph = {i + 1: [] for i in range(n)}
+    graph = {i: [] for i in range(n)}
     level = 0
 
     for i in range(3, len(content), r):
-        level += 1
-
         for j in range(i, i + c):
             cur = content[j].replace('\n', '').split()
             graph[level].append(cur)
-
+        level += 1
+    # print(graph)
     return graph, n
 
 def getDirections(lvl, graph):
@@ -33,7 +32,7 @@ def getDirections(lvl, graph):
             g.append(t)
     return g
 
-# testing_logic, n = readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/itsybitsy-maze.txt')
+testing_logic, n = readGraph('/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/tiny-maze.txt')
 
 
 # for k, v in testing_logic.items():
