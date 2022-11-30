@@ -132,7 +132,7 @@ if __name__ == "__main__":
                         graph[lvl][i][j].down = graph[lvl - 1][i][j]
 
     # print(graph)
-    f_analysis = open('analysis', 'w')
+    f_analysis = open('analysis.txt', 'w')
     for k, v in dir.items():
         for vals in v:
             f_analysis.write('    '.join(vals) + '\n')
