@@ -1,4 +1,4 @@
-# itsy-bitsy-spider
+# itsy-bitsy-spider-cpp
 
 Before running and compiling, go to the first line inside the `main()` function and copy the path to your desired textfile.
 
