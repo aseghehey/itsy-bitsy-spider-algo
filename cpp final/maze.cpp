@@ -89,22 +89,65 @@ void helper(Node v, std::vector<bool>& visited, std::vector<std::string> path, s
     }
 }
 
-std::string bfs(Node start, Node end){
-    // create visit
+
+void bfs(Node start, Node end){
     std::vector<bool> visited;
     visited.resize(totalsize, false);
-    std::queue<std::tuple<Node, std::vector<std::string>>> queue;
+    std::queue<std::pair<Node, std::vector<std::string>>> queue;
+    std::vector<std::string> start_path;
+    
+    std::pair<Node, std::vector<std::string>> p(start, start_path);
+    queue.push(p);
     visited[start.id] = true;
 
-    while(!queue.empty()){
-        std::tuple<Node, std::vector<std::string>> nodeTuple = queue.front();
+    while (!queue.empty()) {
+        std::pair<Node, std::vector<std::string>> current_pair = queue.front();
         queue.pop();
+
+        Node node = current_pair.first;
+        std::vector<std::string> cur_path = current_pair.second;
+
+        if (node.id == end.id) {
+            std::ofstream output("output.txt");
+            for (int i = 0; i < cur_path.size(); i++){
+                output << cur_path[i] << ' ';
+            }
+            output.close();
+            break;
+        }
+
+        if (node.North != nullptr){
+            helper(*node.North, visited, cur_path, "N", queue);
+        }
+
+        if (node.South != nullptr){
+            helper(*node.South, visited, cur_path, "S", queue);
+        }
+
+        if (node.East != nullptr){
+            helper(*node.East, visited, cur_path, "E", queue);
+        }
+
+        if (node.West != nullptr){
+            helper(*node.West, visited, cur_path, "W", queue);
+        }
+
+        if (node.Up != nullptr){
+            helper(*node.Up, visited, cur_path, "U", queue);
+        }
+
+        if (node.Down != nullptr){
+            helper(*node.Down, visited, cur_path, "D", queue);
+        }
     }
+
 }
 
 int main(){
     
-    std::ifstream file("/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/tiny-maze.txt");
+    // std::ifstream file("/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/tiny-maze.txt");
+    //itsybitsy-maze.txt
+    std::ifstream file("/Users/emanuelaseghehey/Development/Itsy-Bitsy-Spider-algo/textfiles/itsybitsy-maze.txt");
     std::string results;
 
     if (!file.is_open()){
@@ -177,28 +220,32 @@ int main(){
         }
     }
 
-    // test
-    // for (int i = 0; i < binaryGraph.size(); i++){
-    //     for (int j = 0; j < binaryGraph[i].size(); j++){
-    //         for (int k = 0; k < binaryGraph[i][j].size(); k++){
-    //             std::cout << graph[i][j][k].id << ' ';
-    //         }
-    //         std::cout << std::endl;
-    //     }
-    //     std::cout << std::endl;
-    // }
+    bfs(graph[std::get<0>(start)][std::get<1>(start)][std::get<2>(start)], graph[std::get<0>(end)][std::get<1>(end)][std::get<2>(end)]);
 
+    /*
+    //test
+
+    for (int i = 0; i < binaryGraph.size(); i++){
+        for (int j = 0; j < binaryGraph[i].size(); j++){
+            for (int k = 0; k < binaryGraph[i][j].size(); k++){
+                std::cout << graph[i][j][k].id << ' ';
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+    }
+    */
     // std::cout << graph[0][0][0].Up << std::endl;
     // std::cout << &graph[1][0][0] << std::endl;
-
+    /*
     std::vector<bool> visited;
     visited.resize(totalsize, false);
     std::queue<std::pair<Node, std::vector<std::string>>> queue;
     std::vector<std::string> start_path;
 
-    std::pair<Node, std::vector<std::string>> p(graph[0][0][0], start_path);
+    std::pair<Node, std::vector<std::string>> p(graph[0][3][3], start_path);
     queue.push(p);
-    visited[graph[0][0][0].id] = true;
+    visited[graph[0][3][3].id] = true;
 
     while(!queue.empty()){
 
@@ -214,7 +261,7 @@ int main(){
         // }
         // std::cout << std::endl;
 
-        if (cur.id == graph[2][2][2].id){
+        if (cur.id == graph[4][0][0].id){
             for (int i = 0; i < path.size(); i ++){
                 std::cout << path[i] << ' ';
             }
@@ -246,6 +293,7 @@ int main(){
             helper(*cur.Down, visited, path, "D", queue);
         }
     }
-
+    */
+    
     return 0;
 }
